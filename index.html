@@ -328,11 +328,8 @@
             const resultBox = document.getElementById('result-box');
             const resultLevelEl = document.getElementById('result-level');
             const nextStepsEl = document.getElementById('next-steps');
-            const resultTitleEl = document.querySelector('#step-5 h2');
 
-            // Resetear clases y título
             resultBox.classList.remove('bg-red-100', 'text-red-800', 'bg-orange-100', 'text-orange-800', 'bg-green-100', 'text-green-800');
-            resultTitleEl.textContent = 'Resultado de la Evaluación';
 
             switch (appState.riskLevel) {
                 case 'ALTO':
@@ -348,15 +345,7 @@
                 case 'LEVE':
                     resultBox.classList.add('bg-green-100', 'text-green-800');
                     resultLevelEl.textContent = 'LEVE';
-                    
-                    const isUnidentified = appState.justification.includes('Clasificado por descarte al no presentar riesgos Altos o Moderados.');
-                    
-                    if (isUnidentified) {
-                        resultTitleEl.textContent = 'Arquetipo no identificado automáticamente';
-                        nextStepsEl.innerHTML = `<p>La actividad ha sido clasificada como LEVE por descarte. El personal debe completar la <strong>inducción de seguridad básica</strong> y cumplir las normativas generales del sitio.</p><p class="mt-3">Deberá indicar -a soporte@minexus.net- "Arquetipo con Programa de Seguridad e Higiene".</p>`;
-                    } else {
-                        nextStepsEl.innerHTML = `<p>El personal del contratista debe completar la <strong>inducción de seguridad básica</strong> para visitantes/proveedores. Se espera el cumplimiento de las normativas generales de seguridad del sitio.</p>`;
-                    }
+                    nextStepsEl.innerHTML = `<p>El personal del contratista debe completar la <strong>inducción de seguridad básica</strong> para visitantes/proveedores. Se espera el cumplimiento de las normativas generales de seguridad del sitio.</p>`;
                     break;
             }
         }
@@ -377,9 +366,6 @@
             document.getElementById('evaluatorName').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             
-            // Resetear título del resultado
-            document.querySelector('#step-5 h2').textContent = 'Resultado de la Evaluación';
-
             // Volver al primer paso
             goToStep(1);
         }
