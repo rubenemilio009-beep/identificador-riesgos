@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Riesgo de Actividad para Contratistas (CRAC)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilos para la impresión */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-section, #print-section * {
+                visibility: visible;
+            }
+            #print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+        /* Animación de entrada */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Clasificador de Riesgo de Actividad (CRAC)</h1>
+            <p class="text-gray-600 mt-1">Herramienta para la evaluación de riesgo de actividades de contratistas.</p>
+        </header>
+
+        <main id="app" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 transition-all duration-300">
+
+            <!-- Paso 1: Identificación -->
+            <div id="step-1" class="fade-in">
+                <h2 class="text-xl font-semibold mb-1">Paso 1: Identificación de la Actividad</h2>
+                <p class="text-gray-500 mb-6">Complete los datos para contextualizar la evaluación.</p>
+                <div class="space-y-4">
+                    <div>
+                        <label for="contractorName" class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Empresa Contratista</label>
+                        <input type="text" id="contractorName" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="activityDescription" class="block text-sm font-medium text-gray-700 mb-1">Descripción Breve del Servicio o Actividad</label>
+                        <textarea id="activityDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Servicio de mantenimiento eléctrico en oficinas..."></textarea>
+                    </div>
+                    <div>
+                        <label for="evaluatorName" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Evaluador</label>
+                        <input type="text" id="evaluatorName" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div class="mt-8 text-right">
+                    <button onclick="goToStep(2)" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        Iniciar Evaluación &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paso 2: Riesgo Alto -->
+            <div id="step-2" class="hidden fade-in">
+                <h2 class="text-xl font-semibold mb-1">Paso 2: Evaluación de Riesgo ALTO</h2>
+                <p class="text-gray-500 mb-6">La actividad a realizar, ¿involucra alguna de las siguientes tareas? Marque todas las que apliquen.</p>
+                <div id="high-risk-options" class="space-y-3">
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Perforación tipo Rotary.">
+                        <span class="ml-3 text-gray-700">Perforación tipo Rotary.</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Movimiento de suelos a gran escala (excavaciones masivas, construcción de terraplenes).">
+                        <span class="ml-3 text-gray-700">Movimiento de suelos a gran escala.</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Construcción, operación o mantenimiento de líneas eléctricas de alto voltaje (ej. 33kv).">
+                        <span class="ml-3 text-gray-700">Construcción o mantenimiento de líneas de alto voltaje (ej. 33kv).</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Operación y mantenimiento de una usina generadora de energía (ej. 5MW).">
+                        <span class="ml-3 text-gray-700">Operación y mantenimiento de usina generadora (ej. 5MW).</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="La actividad corresponde a un Arquetipo UOCRA (construcción).">
+                        <span class="ml-3 text-gray-700">Corresponde a un "Arquetipo UOCRA" (construcción).</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="El contratista presenta un Programa de Seguridad e Higiene complejo.">
+                        <span class="ml-3 text-gray-700">Presenta un "Programa de Seguridad e Higiene" complejo.</span>
+                    </label>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button onclick="goToStep(1)" class="text-gray-600 font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">&larr; Anterior</button>
+                    <button onclick="evaluateRisk('high')" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">Continuar</button>
+                </div>
+            </div>
+
+            <!-- Paso 3: Riesgo Moderado -->
+            <div id="step-3" class="hidden fade-in">
+                <h2 class="text-xl font-semibold mb-1">Paso 3: Evaluación de Riesgo MODERADO</h2>
+                <p class="text-gray-500 mb-6">Dado que no es de Riesgo Alto, ¿la actividad involucra alguna de las siguientes tareas?</p>
+                <div id="moderate-risk-options" class="space-y-3">
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Mantenimiento general (mecánico, eléctrico de baja tensión, instrumentación).">
+                        <span class="ml-3 text-gray-700">Mantenimiento general (mecánico, eléctrico BT, etc.).</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Transporte de cargas generales, sustancias peligrosas o personal.">
+                        <span class="ml-3 text-gray-700">Transporte (cargas, materiales o personal).</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Instalación o mantenimiento de cartelería vial o industrial.">
+                        <span class="ml-3 text-gray-700">Instalación o mantenimiento de cartelería.</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Prestación de servicios médicos o de enfermería en el sitio.">
+                        <span class="ml-3 text-gray-700">Servicios médicos o de enfermería.</span>
+                    </label>
+                     <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Servicio de escolta para transportes.">
+                        <span class="ml-3 text-gray-700">Servicio de escolta para transportes.</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="La actividad corresponde a un Arquetipo Transporte.">
+                        <span class="ml-3 text-gray-700">Corresponde a un "Arquetipo Transporte".</span>
+                    </label>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button onclick="goToStep(2)" class="text-gray-600 font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">&larr; Anterior</button>
+                    <button onclick="evaluateRisk('moderate')" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">Continuar</button>
+                </div>
+            </div>
+            
+            <!-- Paso 4: Riesgo Leve (Confirmación) -->
+            <div id="step-4" class="hidden fade-in">
+                <h2 class="text-xl font-semibold mb-1">Paso 4: Evaluación de Riesgo LEVE</h2>
+                <p class="text-gray-500 mb-6">La actividad parece ser de bajo riesgo. Confirme si se asemeja a alguna de las siguientes descripciones.</p>
+                <div id="low-risk-options" class="space-y-3">
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Toma de inventarios en almacenes u oficinas.">
+                        <span class="ml-3 text-gray-700">Toma de inventarios.</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Servicios profesionales (traducción, consultoría, asesoramiento arqueológico, legal).">
+                        <span class="ml-3 text-gray-700">Servicios profesionales (consultoría, traducción, etc.).</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Limpieza de oficinas o áreas comunes no industriales.">
+                        <span class="ml-3 text-gray-700">Limpieza de oficinas.</span>
+                    </label>
+                    <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="Servicios de bienestar (clases de yoga, entrenador deportivo).">
+                        <span class="ml-3 text-gray-700">Servicios de bienestar (deportes, etc.).</span>
+                    </label>
+                     <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="La actividad corresponde a un Arquetipo sin Programa de Seguridad e Higiene o roles de Visitante.">
+                        <span class="ml-3 text-gray-700">Corresponde a "Arquetipo sin Programa de S&H" o "Visitante".</span>
+                    </label>
+                </div>
+                <div class="mt-8 flex justify-between">
+                    <button onclick="goToStep(3)" class="text-gray-600 font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">&larr; Anterior</button>
+                    <button onclick="evaluateRisk('low')" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">Ver Resultado Final</button>
+                </div>
+            </div>
+
+            <!-- Paso 5: Resultado -->
+            <div id="step-5" class="hidden fade-in">
+                <div id="print-section">
+                    <h2 class="text-2xl font-bold text-center mb-4">Resultado de la Evaluación</h2>
+                    
+                    <!-- Contenedor del resultado -->
+                    <div id="result-box" class="text-center p-6 rounded-lg mb-6">
+                        <p class="text-lg font-medium">Nivel de Riesgo de la Actividad</p>
+                        <p id="result-level" class="text-4xl font-bold mt-1"></p>
+                    </div>
+
+                    <!-- Resumen de la evaluación -->
+                    <div class="border-t border-b border-gray-200 py-4">
+                        <h3 class="text-lg font-semibold mb-3">Resumen de la Evaluación</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="font-semibold text-gray-600">Empresa Contratista:</p>
+                                <p id="summary-contractor" class="text-gray-800"></p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-600">Evaluador:</p>
+                                <p id="summary-evaluator" class="text-gray-800"></p>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <p class="font-semibold text-gray-600">Actividad Evaluada:</p>
+                                <p id="summary-activity" class="text-gray-800"></p>
+                            </div>
+                             <div class="sm:col-span-2">
+                                <p class="font-semibold text-gray-600">Fecha de Evaluación:</p>
+                                <p id="summary-date" class="text-gray-800"></p>
+                            </div>
+                            <div id="summary-justification-container" class="sm:col-span-2">
+                                <p class="font-semibold text-gray-600">Justificación de la Clasificación:</p>
+                                <ul id="summary-justification" class="list-disc list-inside text-gray-800 space-y-1 mt-1">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pasos siguientes -->
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold mb-3">Pasos Siguientes Recomendados</h3>
+                        <div id="next-steps" class="bg-gray-50 p-4 rounded-md text-sm text-gray-700"></div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 no-print">
+                    <button onclick="window.print()" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-gray-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7V9h6v3z" clip-rule="evenodd" /></svg>
+                        Imprimir / Guardar PDF
+                    </button>
+                    <button onclick="resetApp()" class="w-full sm:w-auto bg-indigo-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        Evaluar Otra Actividad
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Estado de la aplicación para almacenar datos
+        const appState = {
+            contractorName: '',
+            activityDescription: '',
+            evaluatorName: '',
+            riskLevel: '',
+            justification: [],
+            date: ''
+        };
+
+        const steps = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5'];
+
+        // Función para navegar entre pasos
+        function goToStep(stepNumber) {
+            // Guardar datos del paso 1 si estamos en él
+            if (stepNumber > 1 && document.getElementById('step-1').style.display !== 'none') {
+                appState.contractorName = document.getElementById('contractorName').value;
+                appState.activityDescription = document.getElementById('activityDescription').value;
+                appState.evaluatorName = document.getElementById('evaluatorName').value;
+                
+                if (!appState.contractorName || !appState.activityDescription || !appState.evaluatorName) {
+                    alert('Por favor, complete todos los campos de identificación.');
+                    return;
+                }
+            }
+
+            steps.forEach((stepId, index) => {
+                const el = document.getElementById(stepId);
+                if (index + 1 === stepNumber) {
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        }
+
+        // Función para evaluar el riesgo
+        function evaluateRisk(level) {
+            let selectedOptions = [];
+            const containerId = `${level}-risk-options`;
+            const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`);
+            checkboxes.forEach(cb => selectedOptions.push(cb.value));
+
+            if (level === 'high' && selectedOptions.length > 0) {
+                appState.riskLevel = 'ALTO';
+                appState.justification = selectedOptions;
+                showResult();
+            } else if (level === 'high' && selectedOptions.length === 0) {
+                goToStep(3);
+            } else if (level === 'moderate' && selectedOptions.length > 0) {
+                appState.riskLevel = 'MODERADO';
+                appState.justification = selectedOptions;
+                showResult();
+            } else if (level === 'moderate' && selectedOptions.length === 0) {
+                goToStep(4);
+            } else if (level === 'low') {
+                appState.riskLevel = 'LEVE';
+                appState.justification = selectedOptions.length > 0 ? selectedOptions : ['Clasificado por descarte al no presentar riesgos Altos o Moderados.'];
+                showResult();
+            }
+        }
+
+        // Función para mostrar la pantalla de resultados
+        function showResult() {
+            goToStep(5);
+            
+            // Obtener fecha actual
+            appState.date = new Date().toLocaleDateString('es-AR', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Poblar resumen
+            document.getElementById('summary-contractor').textContent = appState.contractorName;
+            document.getElementById('summary-activity').textContent = appState.activityDescription;
+            document.getElementById('summary-evaluator').textContent = appState.evaluatorName;
+            document.getElementById('summary-date').textContent = appState.date;
+            
+            const justificationList = document.getElementById('summary-justification');
+            justificationList.innerHTML = '';
+            appState.justification.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                justificationList.appendChild(li);
+            });
+            
+            // Configurar la caja de resultado y los pasos siguientes
+            const resultBox = document.getElementById('result-box');
+            const resultLevelEl = document.getElementById('result-level');
+            const nextStepsEl = document.getElementById('next-steps');
+
+            resultBox.classList.remove('bg-red-100', 'text-red-800', 'bg-orange-100', 'text-orange-800', 'bg-green-100', 'text-green-800');
+
+            switch (appState.riskLevel) {
+                case 'ALTO':
+                    resultBox.classList.add('bg-red-100', 'text-red-800');
+                    resultLevelEl.textContent = 'ALTO';
+                    nextStepsEl.innerHTML = `<p>Esta actividad requiere la presentación de un <strong>Programa de Seguridad y Salud Ocupacional (SSO)</strong> detallado, el cual debe ser aprobado por la Gerencia de SSO de Rincón. Se aplicarán auditorías y supervisiones frecuentes.</p>`;
+                    break;
+                case 'MODERADO':
+                    resultBox.classList.add('bg-orange-100', 'text-orange-800');
+                    resultLevelEl.textContent = 'MODERADO';
+                    nextStepsEl.innerHTML = `<p>El contratista debe presentar <strong>Procedimientos de Trabajo Seguro (PTS)</strong> y <strong>Análisis de Riesgos de la Tarea (ART)</strong> específicos para sus actividades. Se requiere supervisión periódica en terreno.</p>`;
+                    break;
+                case 'LEVE':
+                    resultBox.classList.add('bg-green-100', 'text-green-800');
+                    resultLevelEl.textContent = 'LEVE';
+                    nextStepsEl.innerHTML = `<p>El personal del contratista debe completar la <strong>inducción de seguridad básica</strong> para visitantes/proveedores. Se espera el cumplimiento de las normativas generales de seguridad del sitio.</p>`;
+                    break;
+            }
+        }
+
+        // Función para reiniciar la aplicación
+        function resetApp() {
+            // Resetear estado
+            appState.contractorName = '';
+            appState.activityDescription = '';
+            appState.evaluatorName = '';
+            appState.riskLevel = '';
+            appState.justification = [];
+            appState.date = '';
+
+            // Limpiar campos de formulario
+            document.getElementById('contractorName').value = '';
+            document.getElementById('activityDescription').value = '';
+            document.getElementById('evaluatorName').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            // Volver al primer paso
+            goToStep(1);
+        }
+
+        // Iniciar la aplicación en el primer paso
+        document.addEventListener('DOMContentLoaded', () => {
+            goToStep(1);
+        });
+    </script>
+</body>
+</html>
